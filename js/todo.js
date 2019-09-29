@@ -39,14 +39,13 @@ $(document)
                 }
             })
         }
+        function toggleChecked(node) {
+            var toggleChecked = $("li#" + node[0].id);
+            $(toggleChecked).toggleClass("checked")
+        }
 
         // event handlers
-        // TODO: Double click to EDIT
-        // TODO: add item onclick or on keypress==13
         // $("button").click(function () { removeTodoItems(); }) // should remove CHECKED/COMPLETE items only
-        // $("ol").on('click', $("li"), function () {
-        //     $("li").toggleClass("checked")
-        // })
         $("#button").on('click', function () {
             if (inputIsEmpty())
             {
@@ -58,17 +57,13 @@ $(document)
                 var out = $(`
                 <li id=${id} class="">
                     <input name="done-todo" type="checkbox" class="done-todo"> <span>${text}</span> </input>
-                </li>`).on('dblclick', $("li > input"), function () {
-                    editTodoItem($(this))
-                    // $("#" + id).toggleClass("checked")
-                    // .on('dblclick', function (e) {
-                    // Add attribute in span[contenteditable="true"]
-                    // e.stopPropagation();
-                    // var currNode = $(this);
-                    // var value = $(this).html();
-                    // editTodoItem(id, currNode, value)
-                    // });
-                })
+                </li>`)
+                    .on('change', $("#" + id), function () {
+                        toggleChecked($(this))
+                    })
+                    .on('dblclick', $("li > input"), function () {
+                        editTodoItem($(this))
+                    })
                 $("ol").append(out);
             }
         })
