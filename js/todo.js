@@ -1,10 +1,6 @@
 $(document)
     .ready(function () {
 
-        let todos = [];
-        function loadTodoItems() {
-            if (todos.length > 0) displayTodoItems();
-        }
         function generateUUID() {
             /*jshint bitwise:false */
             var i,
@@ -26,8 +22,16 @@ $(document)
             }
             return uuid;
         }
+        function inputIsEmpty() {
+            return $("input[name=ListItem]").val().length < 1;
+        }
+        function toggleInputCheck(idx) {
+            // toggle: input.attr[checked] , li.toggleClass=checked
+            // $("p").toggleClass("<css name>");
+        }
         function addTodoItem() {
-            todos.push($("input[name=ListItem]").val());
+            Todoitem = { "todo": $("input[name=ListItem]").val(), "id": generateUUID() }
+            todos.push(Todoitem);
         }
         function removeTodoItem(idx) {
             todos.splice(idx, 1);
@@ -37,21 +41,29 @@ $(document)
         }
         function editTodoItems(idx, newContent) {
             todos[idx] = newContent;
+            loadTodoItems();
         }
-        function inputIsEmpty() {
-            return $("input[name=ListItem]").val().length < 1;
-        }
-        function displayTodoItems() {
-            // <li id="c57aab79-7dfa-4d85-8ede-aa653a8b5d93" class="">
-            // <input name="done-todo" type="checkbox" class="done-todo"> Parking Lot APP Refactor </li>
-            // list items
+        function displayTodoItem() {
+            if (todos.length > 0)
+            {
+                const item = todos[todos.length - 1];
+                let out = '';
+                out +=
+                    `
+                    <li id=${item.id} class="">
+                    <input name="done-todo" type="checkbox" class="done-todo"> ${item.todo} </li>
+                    `;
+                $("ol").append(out);
+            }
         }
 
 
-        // code to be implemented
-        loadTodoItems();
+        // event handlers
+        let todos = [];
         $("#button").click(() => {
             inputIsEmpty() ? alert("You cannot add empty todo item on your list.") : addTodoItem();
-            console.log(todos);
+            displayTodoItem();
         })
+
+        $("li > input[type=checkbox]").change(() => console.log("toggleInputCheck()"));
     });
