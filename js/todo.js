@@ -25,11 +25,7 @@ $(document)
         function inputIsEmpty() {
             return $("input[name=ListItem]").val().length < 1;
         }
-        function removeTodoItems() {
-            $("ol").empty();
-        }
         function editTodoItem(node) {
-            // console.dir(node)
             var editSpan = $("li#" + node[0].id + " span");
             $(editSpan).attr("contenteditable", true);
             $(editSpan).on('keypress', function (e) {
@@ -46,6 +42,9 @@ $(document)
 
         // event handlers
         // $("button").click(function () { removeTodoItems(); }) // should remove CHECKED/COMPLETE items only
+        // TODO:
+        // 1. Able to Filter
+        // 2. Able to Delete Complete todoItems
         $("#button").on('click', function () {
             if (inputIsEmpty())
             {
