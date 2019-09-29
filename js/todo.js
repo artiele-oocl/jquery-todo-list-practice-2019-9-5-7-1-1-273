@@ -28,6 +28,7 @@ $(document)
         function toggleInputCheck(idx) {
             // toggle: input.attr[checked] , li.toggleClass=checked
             // $("p").toggleClass("<css name>");
+            console.log(idx);
         }
         function addTodoItem() {
             Todoitem = { "todo": $("input[name=ListItem]").val(), "id": generateUUID() }
@@ -43,7 +44,7 @@ $(document)
             todos[idx] = newContent;
             loadTodoItems();
         }
-        function displayTodoItem() {
+        function renderTodoItem() {
             if (todos.length > 0)
             {
                 const item = todos[todos.length - 1];
@@ -60,10 +61,17 @@ $(document)
 
         // event handlers
         let todos = [];
+        $("input[type=checkbox].done-todo").on("change", () => { alert('changed') })
+        // $('input[type=checkbox]').change(function () {
+        //     // alert('changed');
+        //     console.log("checking()");
+        // });
         $("#button").click(() => {
             inputIsEmpty() ? alert("You cannot add empty todo item on your list.") : addTodoItem();
-            displayTodoItem();
+            renderTodoItem();
         })
 
-        $("li > input[type=checkbox]").change(() => console.log("toggleInputCheck()"));
+        // $("li :checkbox").click(() => {
+        //     toggleInputCheck(1);
+        // });
     });
