@@ -25,10 +25,10 @@ $(document)
         function inputIsEmpty() {
             return $("input[name=ListItem]").val().length < 1;
         }
-        function toggleInputCheck(idx) {
+        function toggleInputCheck(selector) {
             // toggle: input.attr[checked] , li.toggleClass=checked
             // $("p").toggleClass("<css name>");
-            console.log(idx);
+            console.log($(this));
         }
         function addTodoItem() {
             Todoitem = { "todo": $("input[name=ListItem]").val(), "id": generateUUID() }
@@ -38,7 +38,11 @@ $(document)
             todos.splice(idx, 1);
         }
         function removeTodoItems() {
-            todos.splice(0, todos.length);
+            if (todos.length > 0)
+            {
+                todos.splice(0, todos.length)
+                $("ol").empty();
+            };
         }
         function editTodoItems(idx, newContent) {
             todos[idx] = newContent;
@@ -52,7 +56,8 @@ $(document)
                 out +=
                     `
                     <li id=${item.id} class="">
-                    <input name="done-todo" type="checkbox" class="done-todo"> ${item.todo} </li>
+                        <input name="done-todo" type="checkbox" class="done-todo"> ${item.todo}
+                    </li>
                     `;
                 $("ol").append(out);
             }
@@ -61,17 +66,17 @@ $(document)
 
         // event handlers
         let todos = [];
-        $("input[type=checkbox].done-todo").on("change", () => { alert('changed') })
-        // $('input[type=checkbox]').change(function () {
-        //     // alert('changed');
-        //     console.log("checking()");
-        // });
-        $("#button").click(() => {
+        // TODO: event handlers
+        $("button").click(function () { removeTodoItems(); })
+        $("#button").on('click', $("ol"), function () {
             inputIsEmpty() ? alert("You cannot add empty todo item on your list.") : addTodoItem();
             renderTodoItem();
         })
-
-        // $("li :checkbox").click(() => {
-        //     toggleInputCheck(1);
-        // });
+        let $checkbox = $('input[name="done-todo"]');
+        $("ol").on('click', $checkbox, function () {
+            // $(this).prop("checked")
+            $checkbox.click(function () {
+                console.log(this)
+            })
+        });
     });
