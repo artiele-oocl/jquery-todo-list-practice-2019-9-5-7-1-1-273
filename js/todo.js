@@ -25,58 +25,51 @@ $(document)
         function inputIsEmpty() {
             return $("input[name=ListItem]").val().length < 1;
         }
-        function toggleInputCheck(selector) {
-            // toggle: input.attr[checked] , li.toggleClass=checked
-            // $("p").toggleClass("<css name>");
-            console.log($(this));
-        }
-        function addTodoItem() {
-            Todoitem = { "todo": $("input[name=ListItem]").val(), "id": generateUUID() }
-            todos.push(Todoitem);
-        }
-        function removeTodoItem(idx) {
-            todos.splice(idx, 1);
-        }
         function removeTodoItems() {
-            if (todos.length > 0)
-            {
-                todos.splice(0, todos.length)
-                $("ol").empty();
-            };
+            $("ol").empty();
         }
-        function editTodoItems(idx, newContent) {
-            todos[idx] = newContent;
-            loadTodoItems();
+        function editTodoItem(node) {
+            // console.dir(node)
+            var editSpan = $("li#" + node[0].id + " span");
+            $(editSpan).attr("contenteditable", true);
+            $(editSpan).on('keypress', function (e) {
+                if (e.which == 13)
+                {
+                    $(editSpan).attr("contenteditable", false);
+                }
+            })
         }
-        function renderTodoItem() {
-            if (todos.length > 0)
-            {
-                const item = todos[todos.length - 1];
-                let out = '';
-                out +=
-                    `
-                    <li id=${item.id} class="">
-                        <input name="done-todo" type="checkbox" class="done-todo"> ${item.todo}
-                    </li>
-                    `;
-                $("ol").append(out);
-            }
-        }
-
 
         // event handlers
-        let todos = [];
-        // TODO: event handlers
-        $("button").click(function () { removeTodoItems(); })
-        $("#button").on('click', $("ol"), function () {
-            inputIsEmpty() ? alert("You cannot add empty todo item on your list.") : addTodoItem();
-            renderTodoItem();
+        // TODO: Double click to EDIT
+        // TODO: add item onclick or on keypress==13
+        // $("button").click(function () { removeTodoItems(); }) // should remove CHECKED/COMPLETE items only
+        // $("ol").on('click', $("li"), function () {
+        //     $("li").toggleClass("checked")
+        // })
+        $("#button").on('click', function () {
+            if (inputIsEmpty())
+            {
+                alert("You cannot add empty item in your list.");
+            } else
+            {
+                var text = $("input[name=ListItem]").val();
+                var id = generateUUID();
+                var out = $(`
+                <li id=${id} class="">
+                    <input name="done-todo" type="checkbox" class="done-todo"> <span>${text}</span> </input>
+                </li>`).on('dblclick', $("li > input"), function () {
+                    editTodoItem($(this))
+                    // $("#" + id).toggleClass("checked")
+                    // .on('dblclick', function (e) {
+                    // Add attribute in span[contenteditable="true"]
+                    // e.stopPropagation();
+                    // var currNode = $(this);
+                    // var value = $(this).html();
+                    // editTodoItem(id, currNode, value)
+                    // });
+                })
+                $("ol").append(out);
+            }
         })
-        let $checkbox = $('input[name="done-todo"]');
-        $("ol").on('click', $checkbox, function () {
-            // $(this).prop("checked")
-            $checkbox.click(function () {
-                console.log(this)
-            })
-        });
     });
