@@ -48,10 +48,11 @@ $(document)
         function renderTodoItems(todos) {
             $("ol").empty();
             todos.forEach(todo => {
-                console.log(todo)
+                console.log(todo);
+                var checked = todo.isComplete ? 'checked' : '';
                 var out = $(`
-                <li id=${todo.id} class="">
-                    <input name="done-todo" type="checkbox" class="done-todo"> <span>${todo.text}</span> </input>
+                <li id=${todo.id} class="${checked}">
+                    <input name="done-todo" type="checkbox" class="done-todo" ${checked}> <span>${todo.text}</span> </input>
                 </li>`)
                     .on('change', $("#" + todo.id), function () {
                         toggleChecked($(this))
@@ -72,13 +73,13 @@ $(document)
             });
         }
         function renderAllTodoItems() {
-            
+            renderTodoItems(todoList)
         }
         function renderActiveTodoItems(activeTodoItems) {
-            // consider -> isComplete: false
-            var out = '';
-            console.log(activeTodoItems)
             renderTodoItems(activeTodoItems);
+        }
+        function renderCompleteTodoItems(completeTodoItems) {
+            renderTodoItems(completeTodoItems);
         }
 
         // event handlers
@@ -127,7 +128,6 @@ $(document)
 
         $('a[data-filter="all"]').on('click', function (e) {
             e.preventDefault();
-            // node[0]
             $('#filters li a').removeClass("selected");
             $(this).addClass("selected");
             renderAllTodoItems();
@@ -135,7 +135,6 @@ $(document)
         
         $('a[data-filter="active"]').on('click', function (e) {
             e.preventDefault();
-            // node[0]
             $('#filters li a').removeClass("selected");
             $(this).addClass("selected");
             var filtered = todoList.filter((filterByActive));
@@ -144,8 +143,9 @@ $(document)
         
         $('a[data-filter="complete"]').on('click', function (e) {
             e.preventDefault();
-            // node[0]
             $('#filters li a').removeClass("selected");
             $(this).addClass("selected");
+            var filtered = todoList.filter((filterByComplete));
+            renderCompleteTodoItems(filtered);
         })
     });
