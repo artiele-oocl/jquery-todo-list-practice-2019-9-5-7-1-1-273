@@ -45,6 +45,7 @@ $(document)
         // TODO:
         // 1. Able to Filter
         // 2. Able to Delete Complete todoItems
+        var todoList = [];
         $("#button").on('click', function () {
             if (inputIsEmpty())
             {
@@ -53,17 +54,55 @@ $(document)
             {
                 var text = $("input[name=ListItem]").val();
                 var id = generateUUID();
+                todoList.push({
+                    id,
+                    text,
+                    isChecked: false
+                })
+                console.log(todoList)
+
                 var out = $(`
                 <li id=${id} class="">
                     <input name="done-todo" type="checkbox" class="done-todo"> <span>${text}</span> </input>
                 </li>`)
                     .on('change', $("#" + id), function () {
                         toggleChecked($(this))
+                        
+                        for (var i in todoList) {
+                            if (todoList[i].id == id) {
+                                todoList[i].text = text;
+                                todoList[i].isChecked = !todoList[i].isChecked;
+                               break; //Stop this loop, we found it!
+                            }
+                        }
+
                     })
                     .on('dblclick', $("li > input"), function () {
                         editTodoItem($(this))
                     })
                 $("ol").append(out);
             }
+        })
+
+        $('a[data-filter="all"]').on('click', function (e) {
+            e.preventDefault();
+            // node[0]
+            $('#filters li a').removeClass("selected");
+            $(this).addClass("selected");
+        })
+        
+        $('a[data-filter="active"]').on('click', function (e) {
+            e.preventDefault();
+            // node[0]
+            $('#filters li a').removeClass("selected");
+            $(this).addClass("selected");
+            filter
+        })
+        
+        $('a[data-filter="complete"]').on('click', function (e) {
+            e.preventDefault();
+            // node[0]
+            $('#filters li a').removeClass("selected");
+            $(this).addClass("selected");
         })
     });
