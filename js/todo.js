@@ -48,7 +48,7 @@ $(document)
         function renderTodoItems(todos) {
             $("ol").empty();
             todos.forEach(todo => {
-                console.log(todo);
+                // console.log(todo);
                 var checked = todo.isComplete ? 'checked' : '';
                 var out = $(`
                 <li id=${todo.id} class="${checked}">
@@ -83,10 +83,6 @@ $(document)
         }
 
         // event handlers
-        // $("button").click(function () { removeTodoItems(); }) // should remove CHECKED/COMPLETE items only
-        // TODO:
-        // 1. Able to Filter
-        // 2. Able to Delete Complete todoItems
         var todoList = [];
         $("#button").on('click', function () {
             if (inputIsEmpty())
@@ -101,8 +97,7 @@ $(document)
                     text,
                     isComplete: false
                 })
-                console.log(todoList)
-
+                
                 var out = $(`
                 <li id=${id} class="">
                     <input name="done-todo" type="checkbox" class="done-todo"> <span>${text}</span> </input>
