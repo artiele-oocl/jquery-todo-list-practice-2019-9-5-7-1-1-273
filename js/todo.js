@@ -39,6 +39,42 @@ $(document)
             var toggleChecked = $("li#" + node[0].id);
             $(toggleChecked).toggleClass("checked")
         }
+        function filterByActive(arr) {
+            return !arr.isComplete;
+        }
+        function filterByComplete(arr) {
+            return arr.isComplete;
+        }
+        function renderActiveTodoItems(activeTodoItems) {
+            // consider -> isComplete: false
+            var out = '';
+            console.log(activeTodoItems)
+            $("ol").empty();
+
+            activeTodoItems.forEach(todo => {
+                console.log(todo)
+                var out = $(`
+                <li id=${todo.id} class="">
+                    <input name="done-todo" type="checkbox" class="done-todo"> <span>${todo.text}</span> </input>
+                </li>`)
+                    .on('change', $("#" + todo.id), function () {
+                        toggleChecked($(this))
+                        
+                        for (var i in todoList) {
+                            if (todoList[i].id == todo.id) {
+                                todoList[i].text = todo.text;
+                                todoList[i].isComplete = !todoList[i].isComplete;
+                               break; //Stop this loop, we found it!
+                            }
+                        }
+
+                    })
+                    .on('dblclick', $("li > input"), function () {
+                        editTodoItem($(this))
+                    })
+                $("ol").append(out);
+            });
+        }
 
         // event handlers
         // $("button").click(function () { removeTodoItems(); }) // should remove CHECKED/COMPLETE items only
@@ -57,7 +93,7 @@ $(document)
                 todoList.push({
                     id,
                     text,
-                    isChecked: false
+                    isComplete: false
                 })
                 console.log(todoList)
 
@@ -71,7 +107,7 @@ $(document)
                         for (var i in todoList) {
                             if (todoList[i].id == id) {
                                 todoList[i].text = text;
-                                todoList[i].isChecked = !todoList[i].isChecked;
+                                todoList[i].isComplete = !todoList[i].isComplete;
                                break; //Stop this loop, we found it!
                             }
                         }
@@ -96,7 +132,8 @@ $(document)
             // node[0]
             $('#filters li a').removeClass("selected");
             $(this).addClass("selected");
-            filter
+            var filtered = todoList.filter((filterByActive));
+            renderActiveTodoItems(filtered);
         })
         
         $('a[data-filter="complete"]').on('click', function (e) {
