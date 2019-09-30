@@ -45,13 +45,9 @@ $(document)
         function filterByComplete(arr) {
             return arr.isComplete;
         }
-        function renderActiveTodoItems(activeTodoItems) {
-            // consider -> isComplete: false
-            var out = '';
-            console.log(activeTodoItems)
+        function renderTodoItems(todos) {
             $("ol").empty();
-
-            activeTodoItems.forEach(todo => {
+            todos.forEach(todo => {
                 console.log(todo)
                 var out = $(`
                 <li id=${todo.id} class="">
@@ -74,6 +70,15 @@ $(document)
                     })
                 $("ol").append(out);
             });
+        }
+        function renderAllTodoItems() {
+            
+        }
+        function renderActiveTodoItems(activeTodoItems) {
+            // consider -> isComplete: false
+            var out = '';
+            console.log(activeTodoItems)
+            renderTodoItems(activeTodoItems);
         }
 
         // event handlers
@@ -125,6 +130,7 @@ $(document)
             // node[0]
             $('#filters li a').removeClass("selected");
             $(this).addClass("selected");
+            renderAllTodoItems();
         })
         
         $('a[data-filter="active"]').on('click', function (e) {
