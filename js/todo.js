@@ -96,43 +96,46 @@ $(document)
         function renderCompleteTodoItems(completeTodoItems) {
             renderTodoItems(completeTodoItems);
         }
+        function addTodoItemOnClick() {
+            var text = $("input[name=ListItem]").val();
+            var id = generateUUID();
+            todoList.push({
+                id,
+                text,
+                isComplete: false
+            })
+            
+            var out = $(`
+            <li id=${id} class="">
+                <input name="done-todo" type="checkbox" class="done-todo"> <span>${text}</span> </input>
+            </li>`)
+                .on('change', $("#" + id), function () {
+                    toggleChecked($(this))
+                    
+                    for (var i in todoList) {
+                        if (todoList[i].id == id) {
+                            todoList[i].text = text;
+                            todoList[i].isComplete = !todoList[i].isComplete;
+                           break; //Stop this loop, we found it!
+                        }
+                    }
+
+                })
+                .on('dblclick', $("li > input"), function () {
+                    editTodoItem($(this))
+                })
+            $("ol").append(out);
+        }
 
         // event handlers
         var todoList = [];
-        $("#button").on('click', function () {
-            if (inputIsEmpty())
-            {
-                alert("You cannot add empty item in your list.");
-            } else
-            {
-                var text = $("input[name=ListItem]").val();
-                var id = generateUUID();
-                todoList.push({
-                    id,
-                    text,
-                    isComplete: false
-                })
-                
-                var out = $(`
-                <li id=${id} class="">
-                    <input name="done-todo" type="checkbox" class="done-todo"> <span>${text}</span> </input>
-                </li>`)
-                    .on('change', $("#" + id), function () {
-                        toggleChecked($(this))
-                        
-                        for (var i in todoList) {
-                            if (todoList[i].id == id) {
-                                todoList[i].text = text;
-                                todoList[i].isComplete = !todoList[i].isComplete;
-                               break; //Stop this loop, we found it!
-                            }
-                        }
-
-                    })
-                    .on('dblclick', $("li > input"), function () {
-                        editTodoItem($(this))
-                    })
-                $("ol").append(out);
+        $("#button")
+            .on('click', function () {
+            inputIsEmpty() ? alert("You cannot add empty item in your list.") : addTodoItemOnClick();
+            });
+        $("input[name=ListItem]").on('keypress', function (e) {
+            if(e.which == 13) {
+                inputIsEmpty() ? alert("You cannot add empty item in your list.") : addTodoItemOnClick();
             }
         })
 
