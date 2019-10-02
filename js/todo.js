@@ -32,6 +32,21 @@ $(document)
                 if (e.which == 13)
                 {
                     $(editSpan).attr("contenteditable", false);
+                    for (var i in todoList) {
+                        if (todoList[i].id == node[0].id) {
+                            todoList[i].text = $(editSpan).text();
+                           break; //Stop this loop, we found it!
+                        }
+                    }
+                }
+            })
+            $(editSpan).on('blur', function (e) {
+                $(editSpan).attr("contenteditable", false);
+                for (var i in todoList) {
+                    if (todoList[i].id == node[0].id) {
+                        todoList[i].text = $(editSpan).text();
+                        break; //Stop this loop, we found it!
+                    }
                 }
             })
         }
