@@ -1,6 +1,7 @@
 $(document)
     .ready(function () {
 
+        /* To generate IDs for each list item */
         function generateUUID() {
             /*jshint bitwise:false */
             var i,
@@ -22,9 +23,11 @@ $(document)
             }
             return uuid;
         }
+        /* users cannot add empty todoItem into list */
         function inputIsEmpty() {
             return $("input[name=ListItem]").val().length < 1;
         }
+        /* users can edit todoItem and save onblur and onkeypress Enter */
         function editTodoItem(node) {
             var editSpan = $("li#" + node[0].id + " span");
             $(editSpan).attr("contenteditable", true);
@@ -50,16 +53,26 @@ $(document)
                 }
             })
         }
-        function toggleChecked(node) {
+        /* toggle input attribute checked */
+        function toggleChecked(node, id) {
             var toggleChecked = $("li#" + node[0].id);
             $(toggleChecked).toggleClass("checked")
+            for (var i in todoList) {
+                if (todoList[i].id == id) {
+                    todoList[i].isComplete = !todoList[i].isComplete;
+                   break; //Stop this loop, we found it!
+                }
+            }
         }
+        /* callback function to filter in active todoItems  */
         function filterByActive(arr) {
             return !arr.isComplete;
         }
+        /* callback function to filter in complete todoItems  */
         function filterByComplete(arr) {
             return arr.isComplete;
         }
+        /* utility function to render todoList on DOM */
         function renderTodoItems(todos) {
             $("ol").empty();
             todos.forEach(todo => {
@@ -87,15 +100,19 @@ $(document)
                 $("ol").append(out);
             });
         }
+        /* function to render all todo items */
         function renderAllTodoItems() {
             renderTodoItems(todoList)
         }
+        /* function to render all active todo items on DOM */
         function renderActiveTodoItems(activeTodoItems) {
             renderTodoItems(activeTodoItems);
         }
+        /* function to render all complete todo items on DOM */
         function renderCompleteTodoItems(completeTodoItems) {
             renderTodoItems(completeTodoItems);
         }
+        /* utility function to add item in list, and render added todoItems on DOM */
         function addTodoItemOnClick() {
             var text = $("input[name=ListItem]").val();
             var id = generateUUID();
@@ -110,16 +127,7 @@ $(document)
                 <input name="done-todo" type="checkbox" class="done-todo"> <span>${text}</span> </input>
             </li>`)
                 .on('change', $("#" + id), function () {
-                    toggleChecked($(this))
-                    
-                    for (var i in todoList) {
-                        if (todoList[i].id == id) {
-                            todoList[i].text = text;
-                            todoList[i].isComplete = !todoList[i].isComplete;
-                           break; //Stop this loop, we found it!
-                        }
-                    }
-
+                    toggleChecked($(this), id)
                 })
                 .on('dblclick', $("li > input"), function () {
                     editTodoItem($(this))
@@ -127,25 +135,28 @@ $(document)
             $("ol").append(out);
         }
 
-        // event handlers
+        /**
+         * Event handler for adding todoItem
+         */
         var todoList = [];
-        $("#button")
-            .on('click', function () {
+        $("#button").on('click', function () {
             inputIsEmpty() ? alert("You cannot add empty item in your list.") : addTodoItemOnClick();
-            });
+        });
         $("input[name=ListItem]").on('keypress', function (e) {
             if(e.which == 13) {
                 inputIsEmpty() ? alert("You cannot add empty item in your list.") : addTodoItemOnClick();
             }
         })
 
+        /**
+         * Event handler for filters
+         */
         $('a[data-filter="all"]').on('click', function (e) {
             e.preventDefault();
             $('#filters li a').removeClass("selected");
             $(this).addClass("selected");
             renderAllTodoItems();
         })
-        
         $('a[data-filter="active"]').on('click', function (e) {
             e.preventDefault();
             $('#filters li a').removeClass("selected");
@@ -153,7 +164,6 @@ $(document)
             var filtered = todoList.filter((filterByActive));
             renderActiveTodoItems(filtered);
         })
-        
         $('a[data-filter="complete"]').on('click', function (e) {
             e.preventDefault();
             $('#filters li a').removeClass("selected");
